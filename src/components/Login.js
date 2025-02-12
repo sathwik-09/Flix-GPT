@@ -7,11 +7,14 @@ import {
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const name = useRef(null);
   const email = useRef(null);
@@ -31,9 +34,12 @@ const Login = () => {
         .then((userCredential) => {
           const user = userCredential.user;
           updateProfile(user, {
-            displayName: name.current.value , photoURL: "https://instagram.fhyd1-6.fna.fbcdn.net/v/t51.2885-19/438814127_320686244102278_7953204402479199502_n.jpg?_nc_ht=instagram.fhyd1-6.fna.fbcdn.net&_nc_cat=110&_nc_oc=Q6cZ2AHW_Jrja8kswbGmgRxZtQDzF_mYMsxCKxl6JjjUDdBafkGYVsM8Y-nLlpZfmz39aOQ&_nc_ohc=GbLwt9QXGQMQ7kNvgFT8wv9&_nc_gid=435331bbb15042a2acb0dfe807fcb3f2&edm=ALGbJPMBAAAA&ccb=7-5&oh=00_AYCozT3r_wd3WE_PAtHaZtV9cV3Rwxptkqc8T4x-An8vyg&oe=67B15E0C&_nc_sid=7d3ac5"
+            displayName: name.current.value,
           }).then(() => {
+            const {uid, email, displayName} = auth.currentUser; 
+            dispatch(addUser({uid: uid, email: email, displayName: displayName}));
             navigate("/browse"); 
+
           }).catch((error) => {
             setErrorMessage(error.message);
           });
@@ -54,6 +60,7 @@ const Login = () => {
       )
         .then((userCredential) => {
           const user = userCredential.user;
+          navigate('/browse')
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -85,11 +92,12 @@ const Login = () => {
         </h1>
         {!isSignIn && (
           <input
+            ref={name}
             type="text"
             placeholder="Enter your name"
             className="text-white my-2 p-4 w-full rounded-md border bg-gray-600 bg-opacity-20"
           />
-        )}
+        )}  
         <input
           ref={email}
           type="text"
