@@ -22,7 +22,7 @@ const GptSearchBar = () => {
     const gptQuery = "Pretend to be a movie recommendation system and suggest movies for the query : " + searchText.current.value + "only give me names of 5 movies, comma seperated like exmaple : movie1, movie2, movie3, movie4, movie5";  
     const gptSearchResult = await client.chat.completions.create({
       messages: [{ role: "user", content: gptQuery }],
-      model: "gpt-4o",
+      model: "gpt-3.5-turbo",
     });
     const gptMovies = gptSearchResult.choices[0]?.message?.content?.split(",");  
     
@@ -34,7 +34,7 @@ const GptSearchBar = () => {
 
   
   return (
-    <div className="flex justify-center items-center h-screen bg-cover bg-center">
+    <div className="pt-[30%] md:pt-[10%] flex justify-center items-center h-screen bg-cover bg-center">
       <form
         className="flex gap-4 bg-black p-6 rounded-lg bg-opacity-80"
         onSubmit={(e) => e.preventDefault()}
